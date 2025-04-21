@@ -1,5 +1,5 @@
 # models/improved_linear_model.py
-# RMSE: 0.4616
+# RMSE: 0.4453
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np

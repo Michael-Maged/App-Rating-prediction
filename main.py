@@ -197,6 +197,6 @@ def RunRidgeRegression():
 
 if __name__ == "__main__":
 
-    #RunRidgeRegression()
-    RunNormalLinear()
+    RunRidgeRegression()
+    #RunNormalLinear()
     print("Done")
