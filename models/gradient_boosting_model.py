@@ -1,5 +1,5 @@
 # models/gradient_boosting_model.py
-
+# RMSE: 0.4292
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
