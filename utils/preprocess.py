@@ -2,6 +2,11 @@
 
 import pandas as pd
 import numpy as np
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.feature_selection import VarianceThreshold
+
 
 def clean_size(size_str):
     if pd.isnull(size_str):
@@ -79,13 +84,29 @@ def preprocess_data(df):
     df['Size'] = df['Size'].apply(clean_size)
     df['Installs'] = df['Installs'].apply(clean_installs)
     df['Price'] = df['Price'].apply(clean_price)
-    
+
     # Drop columns with all NaN values
     df = df.dropna(axis=1, how='all')
-    
+
     # Fill remaining NaN values with median or 0
     for col in df.select_dtypes(include=[np.number]).columns:
         df[col] = df[col].fillna(df[col].median())
-    
+
     df = encode_features(df)
     return df
+
+
+def build_preprocessing_pipeline():
+    """
+    Builds a preprocessing pipeline with scaling and PCA.
+
+    Returns:
+        Pipeline: A scikit-learn pipeline for preprocessing.
+    """
+    pipeline = Pipeline([
+        ('scaler', StandardScaler()),  # Standardize features     
+        ('variance_threshold', VarianceThreshold(threshold=1e-5)),  # Remove low-variance features
+        ('pca', PCA(n_components=0.95))  # Reduce dimensionality, keeping 95% variance
+        ('pca', PCA(n_components=50))  # Reduce dimensionality, keeping 95% variance
+    ])
+    return pipeline

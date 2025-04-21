@@ -1,5 +1,6 @@
 # models/linear_model.py
 
+# RMSE: 0.8114
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
