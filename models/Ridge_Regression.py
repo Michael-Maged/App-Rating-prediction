@@ -49,7 +49,5 @@ def Ridge_regression(X_train, y_train, X_val, y_val, param_grid=None):
     rmse = np.sqrt(mean_squared_error(y_val, y_pred))
     r2 = r2_score(y_val, y_pred)
 
-    # Log final results
-    print(f"[Tuned Ridge Regression] RMSE: {rmse:.4f} | R² Score: {r2:.4f}")
-
-    return best_model
+    # Log results
+    print(f"[Improved Linear Regression] RMSE: {rmse:.4f} | R² Score: {r2:.4f}")
