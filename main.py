@@ -169,7 +169,7 @@ def RunRidgeRegression():
 
 
     # Train the Ridge Regression model
-    ridge_model = Ridge_regression(X_train_transformed, y_train, X_val_transformed, y_val, alpha=1.0)
+    ridge_model = Ridge_regression(X_train_transformed, y_train, X_val_transformed, y_val)
 
     # Predict on test data
     test_predictions = ridge_model.predict(X_test_transformed)
