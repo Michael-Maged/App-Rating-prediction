@@ -103,3 +103,29 @@ def train_gradient_boosting_with_randomizedsearchcv(X_train, y_train, X_val, y_v
     
     
     return best_model
+
+# RMSE:
+# 3ala kaggle:
+def train_gradient_boosting_with_earlystopping(X_train, y_train, X_val, y_val):
+
+    model = GradientBoostingRegressor(
+        n_estimators=1000,  # Set a high number of estimators
+        learning_rate=0.05,
+        max_depth=5,
+        random_state=42,
+        validation_fraction=0.2,  # Fraction of training data to use for validation
+        n_iter_no_change=10,  # Stop if no improvement for 10 iterations
+        tol=1e-4  # Tolerance for improvement
+    )
+    
+    model.fit(X_train, y_train)
+
+    # Evaluate on validation set
+    y_pred = model.predict(X_val)
+    rmse = np.sqrt(mean_squared_error(y_val, y_pred))
+    r2 = r2_score(y_val, y_pred)
+
+    print(f"Early Stopping Gradient Boosting RMSE: {rmse:.4f}")
+    print(f"Early Stopping Gradient Boosting R² Score: {r2:.4f}")
+
+    return model
