@@ -45,7 +45,6 @@ def train_gradient_boosting_with_gridsearchcv(X_train, y_train, X_val, y_val):
         scoring='neg_mean_squared_error',
         cv=3,
         verbose=1,
-        random_state=42,
     )
     grid_search.fit(X_train, y_train)
 
