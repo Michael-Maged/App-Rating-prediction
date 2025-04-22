@@ -2,10 +2,13 @@
 
 import pandas as pd
 import numpy as np
+from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import VarianceThreshold
+from sklearn.impute import SimpleImputer
+
 
 
 def clean_size(size_str):
@@ -109,3 +112,39 @@ def build_preprocessing_pipeline():
         ('pca', PCA(n_components=0.95))  # Reduce dimensionality, keeping 95% variance
     ])
     return pipeline
+
+def build_preprocessing_pipeline2(X, use_pca=True):
+    """
+    Builds a preprocessing pipeline with scaling, one-hot encoding, 
+    and optional PCA.
+    
+    Parameters:
+        X (DataFrame): The input data.
+        use_pca (bool): Whether to apply PCA for dimensionality reduction.
+    
+    Returns:
+        Pipeline: A scikit-learn pipeline for preprocessing.
+    """
+    categorical_cols = X.select_dtypes(include=['object']).columns.tolist()
+    numerical_cols = X.select_dtypes(exclude=['object']).columns.tolist()
+
+    transformers = [
+        ('num', Pipeline([
+            ('imputer', SimpleImputer(strategy='mean')),  # Impute missing values for numerical columns
+            ('scaler', StandardScaler())  # Scale numerical features
+        ]), numerical_cols),
+        ('cat', Pipeline([
+            ('imputer', SimpleImputer(strategy='most_frequent')),  # Impute missing values for categorical columns
+            ('onehot', OneHotEncoder(handle_unknown='ignore'))  # One-hot encode categorical features
+        ]), categorical_cols)
+    ]
+
+    preprocessor = ColumnTransformer(transformers)
+
+    steps = [('preprocessor', preprocessor)]
+
+    if use_pca:
+        steps.append(('variance_threshold', VarianceThreshold(threshold=1e-5)))  # Remove low-variance features
+        steps.append(('pca', PCA(n_components=0.95)))  # PCA for dimensionality reduction
+
+    return Pipeline(steps)

@@ -3,12 +3,14 @@
 import pandas as pd
 import numpy as np
 import os
-from utils.preprocess import preprocess_data, build_preprocessing_pipeline
-from sklearn.model_selection import train_test_split
+from utils.preprocess import preprocess_data, build_preprocessing_pipeline, build_preprocessing_pipeline2
+from sklearn.model_selection import KFold, train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 from models.linear_model import train_linear_regression
 from models.Ridge_Regression import Ridge_regression
+from models.StratifiedKFold import Ridge_regression_KFold
 from sklearn.preprocessing import StandardScaler
+
 
 
 
@@ -119,7 +121,6 @@ def RunNormalLinear():
     submission.to_csv("submission_lr.csv", index=False)
     print("✅ Submission file saved as submission_lr.csv")
 
-
 def RunRidgeRegression():
     train_clean = preprocess_data(train)
     test_clean = preprocess_data(test)
@@ -189,10 +190,77 @@ def RunRidgeRegression():
     submission.to_csv("submission_Ridge.csv", index=False)
     print("✅ Submission file saved as submission_Ridge.csv")
     
+def run_kfold_ridge():
+    train_clean = preprocess_data(train)
+    test_clean = preprocess_data(test)
+
+    # Align columns (very important)
+    X = train_clean.drop(columns=['App Rating'])
+    y = train_clean['App Rating']
+
+    # Ensure test has same features as X
+    test_clean = test_clean.reindex(columns=X.columns, fill_value=0)
+
+    # Already cleaned earlier
+    X = X.fillna(0)
+
+    # Split into train and validation sets
+    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    X_train = X_train.fillna(0)
+    X_val = X_val.fillna(0)
+
+    # Ensure y_train and y_val do not contain NaN
+    y_train = y_train.fillna(y_train.median())
+    y_val = y_val.fillna(y_val.median())
+
+    # Standardize the features
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_val = scaler.transform(X_val)
 
 
+    test_clean = test_clean.fillna(0)
+    test_clean = scaler.transform(test_clean)  # Standardize test data
+
+
+    # Build and fit preprocessing pipeline
+    preprocessor = build_preprocessing_pipeline()
+
+    # Apply transformations (scaling, variance threshold, PCA) on train and test data
+    X_train_transformed = preprocessor.fit_transform(X_train)
+    X_val_transformed = preprocessor.transform(X_val)
+    X_test_transformed = preprocessor.transform(test_clean)
+
+
+    # Train the Ridge Regression model
+    ridge_model = Ridge_regression_KFold(X_train_transformed, y_train, X_val_transformed, y_val)
+
+    # Predict on test data
+    test_predictions = ridge_model.predict(X_test_transformed)
+
+    # Clip ratings to 1-5 range (just in case)
+    test_predictions = np.clip(test_predictions, 1.0, 5.0)
+
+    # Load sample submission
+    submission_path = os.path.join("data", "SampleSubmission.csv")
+
+    # Check if the sample submission file exists
+    if os.path.exists(submission_path):
+        submission = pd.read_csv(submission_path)
+    else:
+        # Create a new DataFrame if the file doesn't exist
+        submission = pd.DataFrame({'row_id': range(len(test_app_names)), 'Y': [0] * len(test_app_names)})
+
+    # Ensure the submission DataFrame has the correct structure
+    submission['Y'] = test_predictions
+
+    # Save the submission file
+    submission.to_csv("submission_Ridge.csv", index=False)
+    print("✅ Submission file saved as submission_Ridge.csv")
+    
 if __name__ == "__main__":
 
     #RunNormalLinear()
     RunRidgeRegression()
-    print("Done")
+    #run_kfold_ridge()
