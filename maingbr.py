@@ -246,8 +246,8 @@ def RunGradientBoostingEarlyStopping():
 
 if __name__ == "__main__":
 
-    RunGradientBoosting()
+    # RunGradientBoosting()
     # RunGradientBoostingGridSearchCV()
-    # RunGradientBoostingRandomizedSearchCV()
+    RunGradientBoostingRandomizedSearchCV()
     # RunGradientBoostingEarlyStopping()
     print("Done")
