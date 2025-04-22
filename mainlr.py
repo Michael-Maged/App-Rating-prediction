@@ -9,7 +9,6 @@ from sklearn.metrics import mean_squared_error, r2_score
 from models.linear_model import train_linear_regression
 from models.Ridge_Regression import Ridge_regression
 from sklearn.preprocessing import StandardScaler
-from models.gradient_boosting_model import train_gradient_boosting
 
 
 
@@ -190,57 +189,10 @@ def RunRidgeRegression():
     submission.to_csv("submission_Ridge.csv", index=False)
     print("✅ Submission file saved as submission_Ridge.csv")
     
-def RunGradientBoosting():
-    train_clean = preprocess_data(train)
-    test_clean = preprocess_data(test)
-
-    # Align columns
-    X = train_clean
-    y = train_clean['App Rating']
-    test_clean = test_clean.reindex(columns=X.columns, fill_value=0)
-
-    X = train_clean.drop(columns=['App Rating'], errors='ignore')
-    X = X.fillna(0)
-
-    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    X_train = X_train.fillna(0)
-    X_val = X_val.fillna(0)
-    y_train = y_train.fillna(y_train.median())
-    y_val = y_val.fillna(y_val.median())
-
-    if 'App Rating' in test_clean.columns:
-        test_clean = test_clean.drop(columns=['App Rating'])
-    test_clean = test_clean.fillna(0)
-
-    # Train Gradient Boosting model
-    gbr_model = train_gradient_boosting(X_train, y_train, X_val, y_val)
-
-    # Predict on test data
-    test_predictions = gbr_model.predict(test_clean)
-    test_predictions = np.clip(test_predictions, 1.0, 5.0)
-
-    # Save submission
-    submission_path = os.path.join("data", "SampleSubmission.csv")
-
-    # Check if the sample submission file exists
-    if os.path.exists(submission_path):
-        submission = pd.read_csv(submission_path)
-    else:
-        # Create a new DataFrame if the file doesn't exist
-        submission = pd.DataFrame({'row_id': range(len(test_app_names)), 'Y': [0] * len(test_app_names)})
-
-    # Ensure the submission DataFrame has the correct structure
-    submission['Y'] = test_predictions
-
-    # Save the submission file
-    submission.to_csv("submission_gbr.csv", index=False)
-    print("✅ Submission file saved as submission_gbr.csv")
 
 
 if __name__ == "__main__":
 
     #RunNormalLinear()
-    #RunRidgeRegression()
-    RunGradientBoosting()
+    RunRidgeRegression()
     print("Done")
