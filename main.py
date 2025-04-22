@@ -61,7 +61,7 @@ def RunNormalLinear():
 
 
     # Align columns (very important)
-    X = train_clean
+    X = train_clean.drop(columns=['App Rating'])
     y = train_clean['App Rating']
 
     # Ensure test has same features as X
@@ -69,7 +69,6 @@ def RunNormalLinear():
 
 
     # Already cleaned earlier
-    X = train_clean.drop(columns=['App Rating'], errors='ignore')
     X = X.fillna(0)
 
     # Split into train and validation sets
@@ -96,9 +95,6 @@ def RunNormalLinear():
     print(f"Linear Regression RMSE: {rmse:.4f}")
     print(f"Linear Regression R² Score: {r2:.4f}")
 
-    if 'App Rating' in test_clean.columns:
-        test_clean = test_clean.drop(columns=['App Rating'])
-
     test_clean = test_clean.fillna(0)
 
     # Predict on test data
@@ -108,17 +104,17 @@ def RunNormalLinear():
     test_predictions = np.clip(test_predictions, 1.0, 5.0)
 
     # Load sample submission
-    submission_path = os.path.join("data", "sample_submission.csv")
+    submission_path = os.path.join("data", "SampleSubmission.csv")
 
     # Check if the sample submission file exists
     if os.path.exists(submission_path):
         submission = pd.read_csv(submission_path)
     else:
         # Create a new DataFrame if the file doesn't exist
-        submission = pd.DataFrame({'App Name': test_app_names, 'App Rating': [0] * len(test_app_names)})
+        submission = pd.DataFrame({'row_id': range(len(test_app_names)), 'Y': [0] * len(test_app_names)})
 
-    # Update the 'App Rating' column with predictions
-    submission['App Rating'] = test_predictions
+    # Ensure the submission DataFrame has the correct structure
+    submission['Y'] = test_predictions
 
     # Save the submission file
     submission.to_csv("submission_lr.csv", index=False)
@@ -130,14 +126,13 @@ def RunRidgeRegression():
     test_clean = preprocess_data(test)
 
     # Align columns (very important)
-    X = train_clean
+    X = train_clean.drop(columns=['App Rating'])
     y = train_clean['App Rating']
 
     # Ensure test has same features as X
     test_clean = test_clean.reindex(columns=X.columns, fill_value=0)
 
     # Already cleaned earlier
-    X = train_clean.drop(columns=['App Rating'], errors='ignore')
     X = X.fillna(0)
 
     # Split into train and validation sets
@@ -154,7 +149,7 @@ def RunRidgeRegression():
     scaler = StandardScaler()
     X_train = scaler.fit_transform(X_train)
     X_val = scaler.transform(X_val)
-    test_clean = test_clean.drop(columns=['App Rating'])
+
 
     test_clean = test_clean.fillna(0)
     test_clean = scaler.transform(test_clean)  # Standardize test data
@@ -179,21 +174,21 @@ def RunRidgeRegression():
     test_predictions = np.clip(test_predictions, 1.0, 5.0)
 
     # Load sample submission
-    submission_path = os.path.join("data", "sample_submission.csv")
+    submission_path = os.path.join("data", "SampleSubmission.csv")
 
     # Check if the sample submission file exists
     if os.path.exists(submission_path):
         submission = pd.read_csv(submission_path)
     else:
         # Create a new DataFrame if the file doesn't exist
-        submission = pd.DataFrame({'App Name': test_app_names, 'App Rating': [0] * len(test_app_names)})
+        submission = pd.DataFrame({'row_id': range(len(test_app_names)), 'Y': [0] * len(test_app_names)})
 
-    # Update the 'App Rating' column with predictions
-    submission['App Rating'] = test_predictions
+    # Ensure the submission DataFrame has the correct structure
+    submission['Y'] = test_predictions
 
     # Save the submission file
-    submission.to_csv("submission_ridge.csv", index=False)
-    print("✅ Submission file saved as submission_ridge.csv")
+    submission.to_csv("submission_Ridge.csv", index=False)
+    print("✅ Submission file saved as submission_Ridge.csv")
     
 def RunGradientBoosting():
     train_clean = preprocess_data(train)
@@ -226,13 +221,19 @@ def RunGradientBoosting():
     test_predictions = np.clip(test_predictions, 1.0, 5.0)
 
     # Save submission
-    submission_path = os.path.join("data", "sample_submission.csv")
+    submission_path = os.path.join("data", "SampleSubmission.csv")
+
+    # Check if the sample submission file exists
     if os.path.exists(submission_path):
         submission = pd.read_csv(submission_path)
     else:
-        submission = pd.DataFrame({'App Name': test_app_names, 'App Rating': [0] * len(test_app_names)})
+        # Create a new DataFrame if the file doesn't exist
+        submission = pd.DataFrame({'row_id': range(len(test_app_names)), 'Y': [0] * len(test_app_names)})
 
-    submission['App Rating'] = test_predictions
+    # Ensure the submission DataFrame has the correct structure
+    submission['Y'] = test_predictions
+
+    # Save the submission file
     submission.to_csv("submission_gbr.csv", index=False)
     print("✅ Submission file saved as submission_gbr.csv")
 

@@ -1,4 +1,5 @@
-# Best alpha based on Alpha: 5000.0 | RMSE: 0.4448
+# Best based on Alpha: 5000.0 | RMSE: 0.4394 
+# 3ala kaggle: 0.24702
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
@@ -51,3 +52,4 @@ def Ridge_regression(X_train, y_train, X_val, y_val, param_grid=None):
 
     # Log results
     print(f"[Improved Linear Regression] RMSE: {rmse:.4f} | R² Score: {r2:.4f}")
+    return best_model

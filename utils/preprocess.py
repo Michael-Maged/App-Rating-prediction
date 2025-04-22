@@ -107,6 +107,5 @@ def build_preprocessing_pipeline():
         ('scaler', StandardScaler()),  # Standardize features     
         ('variance_threshold', VarianceThreshold(threshold=1e-5)),  # Remove low-variance features
         ('pca', PCA(n_components=0.95))  # Reduce dimensionality, keeping 95% variance
-        ('pca', PCA(n_components=50))  # Reduce dimensionality, keeping 95% variance
     ])
     return pipeline
