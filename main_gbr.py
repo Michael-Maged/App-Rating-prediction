@@ -1,3 +1,5 @@
+#main_gbr.py
+
 import pandas as pd
 import numpy as np
 import os
@@ -94,3 +96,8 @@ def RunGradientBoosting():
     # Save the submission file
     submission.to_csv("submission_gbr.csv", index=False)
     print("✅ Submission file saved as submission_gbr.csv")
+
+if __name__ == "__main__":
+
+    RunGradientBoosting()
+    print("Done")
