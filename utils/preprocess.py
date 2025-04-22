@@ -35,8 +35,6 @@ def clean_installs(install_str):
         return 0  # or np.nan
 
 
-
-
 def clean_price(price_str):
     if pd.isnull(price_str):
         return 0.0  # Or np.nan if you prefer missing values to be NaN
@@ -49,7 +47,6 @@ def clean_price(price_str):
             return 0.0  # Or np.nan if the value can't be converted to a float
     else:
         return 0.0  # Handle the case when the value is a float or other non-string type
-
 
 
 def encode_features(df):
@@ -96,10 +93,43 @@ def preprocess_data(df):
     df = encode_features(df)
     return df
 
+
 def feature_engineering(df):
     df = df.copy()
 
+    # Create new features
+    if 'Last Updated' in df.columns:
+        # Convert 'Last Updated' to datetime and calculate days since last update
+        df['Last Updated'] = pd.to_datetime(df['Last Updated'], errors='coerce')
+        df['Days Since Last Update'] = (datetime.now() - df['Last Updated']).dt.days
+        df.drop(columns=['Last Updated'], inplace=True)  # Drop original column
+
+    if 'Reviews' in df.columns and 'Installs' in df.columns:
+        # Create a feature for reviews per install
+        df['Reviews per Install'] = df['Reviews'] / (df['Installs'] + 1)  # Avoid division by zero
+
+    if 'Price' in df.columns:
+        # Create a categorical feature for price ranges
+        df['Price Category'] = pd.cut(
+            df['Price'],
+            bins=[-1, 0, 5, 20, float('inf')],
+            labels=['Free', 'Low', 'Medium', 'High']
+        )
+
+    if 'Size' in df.columns:
+        # Create a feature for app size categories
+        df['Size Category'] = pd.cut(
+            df['Size'],
+            bins=[-1, 1024, 5120, 10240, float('inf')],  # Example bins in KB
+            labels=['Small', 'Medium', 'Large', 'Very Large']
+        )
+
+    # Drop irrelevant or redundant columns
+    if 'App Name' in df.columns:
+        df.drop(columns=['App Name'], inplace=True)
+
     return df
+
 
 def build_preprocessing_pipeline():
     """

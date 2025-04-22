@@ -9,6 +9,7 @@ from models.gradient_boosting_model import train_gradient_boosting
 from models.gradient_boosting_model import train_gradient_boosting_with_gridsearchcv
 from models.gradient_boosting_model import train_gradient_boosting_with_randomizedsearchcv
 from models.gradient_boosting_model import train_gradient_boosting_with_earlystopping
+from sklearn.preprocessing import OneHotEncoder
 
 
 # Set seed for reproducibility
@@ -53,30 +54,31 @@ test_app_names = test['App Name'].copy()
 
 train = preprocess_data(train)
 test = preprocess_data(test)
+train = feature_engineering(train)
+test = feature_engineering(test)
 
 
 def RunGradientBoosting():
     train_clean = preprocess_data(train)
     test_clean = preprocess_data(test)
+    
+    train_clean = feature_engineering(train_clean)
+    test_clean = feature_engineering(test_clean)
 
     # Align columns
-    X = train_clean
+    X = train_clean.drop(columns=['App Rating'], errors='ignore')
     y = train_clean['App Rating']
     test_clean = test_clean.reindex(columns=X.columns, fill_value=0)
 
-    X = train_clean.drop(columns=['App Rating'], errors='ignore')
-    X = X.fillna(0)
+    # One-Hot Encode categorical features
+    X = pd.get_dummies(X, drop_first=True)
+    test_clean = pd.get_dummies(test_clean, drop_first=True)
 
+    # Align columns again after encoding
+    X, test_clean = X.align(test_clean, join='left', axis=1, fill_value=0)
+
+    # Split the training data into training and validation sets
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    X_train = X_train.fillna(0)
-    X_val = X_val.fillna(0)
-    y_train = y_train.fillna(y_train.median())
-    y_val = y_val.fillna(y_val.median())
-
-    if 'App Rating' in test_clean.columns:
-        test_clean = test_clean.drop(columns=['App Rating'])
-    test_clean = test_clean.fillna(0)
 
     # Train Gradient Boosting model
     gbr_model = train_gradient_boosting(X_train, y_train, X_val, y_val)
@@ -246,8 +248,8 @@ def RunGradientBoostingEarlyStopping():
 
 if __name__ == "__main__":
 
-    # RunGradientBoosting()
+    RunGradientBoosting()
     # RunGradientBoostingGridSearchCV()
-    RunGradientBoostingRandomizedSearchCV()
+    # RunGradientBoostingRandomizedSearchCV()
     # RunGradientBoostingEarlyStopping()
     print("Done")
