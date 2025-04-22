@@ -107,7 +107,7 @@ def train_gradient_boosting_with_randomizedsearchcv(X_train, y_train, X_val, y_v
     return best_model
 
 # RMSE: 0.4144
-# 3ala kaggle:
+# 3ala kaggle: 0.27651
 def train_gradient_boosting_with_earlystopping(X_train, y_train, X_val, y_val):
 
     model = HistGradientBoostingRegressor(
