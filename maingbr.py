@@ -3,7 +3,7 @@
 import pandas as pd
 import numpy as np
 import os
-from utils.preprocess import preprocess_data
+from utils.preprocess import preprocess_data, feature_engineering
 from sklearn.model_selection import train_test_split
 from models.gradient_boosting_model import train_gradient_boosting
 from models.gradient_boosting_model import train_gradient_boosting_with_gridsearchcv
@@ -50,6 +50,7 @@ print("\nTrain columns:\n", train.columns)
 print("\nMissing values:\n", train.isnull().sum())
 
 test_app_names = test['App Name'].copy()
+
 train = preprocess_data(train)
 test = preprocess_data(test)
 

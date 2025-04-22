@@ -1,5 +1,6 @@
 # models/gradient_boosting_model.py
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import mean_squared_error, r2_score
@@ -104,18 +105,18 @@ def train_gradient_boosting_with_randomizedsearchcv(X_train, y_train, X_val, y_v
     
     return best_model
 
-# RMSE:
+# RMSE: 0.4144
 # 3ala kaggle:
 def train_gradient_boosting_with_earlystopping(X_train, y_train, X_val, y_val):
 
-    model = GradientBoostingRegressor(
-        n_estimators=1000,  # Set a high number of estimators
-        learning_rate=0.05,
-        max_depth=5,
-        random_state=42,
-        validation_fraction=0.2,  # Fraction of training data to use for validation
-        n_iter_no_change=10,  # Stop if no improvement for 10 iterations
-        tol=1e-4  # Tolerance for improvement
+    model = HistGradientBoostingRegressor(
+        max_iter=1000,
+        learning_rate=0.01,
+        early_stopping=True,
+        n_iter_no_change=10,
+        validation_fraction=0.2,
+        max_depth=7,
+        random_state=42
     )
     
     model.fit(X_train, y_train)

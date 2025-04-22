@@ -6,6 +6,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import VarianceThreshold
+from datetime import datetime
 
 
 def clean_size(size_str):
@@ -95,6 +96,10 @@ def preprocess_data(df):
     df = encode_features(df)
     return df
 
+def feature_engineering(df):
+    df = df.copy()
+
+    return df
 
 def build_preprocessing_pipeline():
     """
