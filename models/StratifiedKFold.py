@@ -1,7 +1,7 @@
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error, r2_score, make_scorer
 from sklearn.model_selection import GridSearchCV, KFold
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import RobustScaler, StandardScaler
 import numpy as np
 
 # Custom RMSE scoring function
@@ -54,3 +54,31 @@ def Ridge_regression_KFold(X_train, y_train, X_val, y_val, param_grid=None):
 
     print(f"[Final Model] RMSE: {final_rmse:.4f} | R² Score: {r2:.4f}")
     return best_model
+
+def ridge_annealing_search(X_train, y_train, X_val, y_val, alphas=None):
+    if alphas is None:
+        # Start high, halve alpha each time
+        alphas = [1e5 / (2 ** i) for i in range(15)]
+
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_val_scaled = scaler.transform(X_val)
+
+    best_rmse = float('inf')
+    best_alpha = None
+    best_model = None
+
+    for alpha in alphas:
+        model = Ridge(alpha=alpha, fit_intercept=True)
+        model.fit(X_train_scaled, y_train)
+        preds = model.predict(X_val_scaled)
+        rmse = np.sqrt(mean_squared_error(y_val, preds))
+        r2 = r2_score(y_val, preds)
+        print(f"Alpha: {alpha:.4f} | RMSE: {rmse:.4f} | R²: {r2:.4f}")
+        if rmse < best_rmse:
+            best_rmse = rmse
+            best_alpha = alpha
+            best_model = model
+
+    print(f"\n🔥 Best Alpha: {best_alpha:.4f} | Best RMSE: {best_rmse:.4f}")
+    return best_model, scaler
