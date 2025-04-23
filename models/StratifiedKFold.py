@@ -57,8 +57,8 @@ def Ridge_regression_KFold(X_train, y_train, X_val, y_val, param_grid=None):
 
 def ridge_annealing_search(X_train, y_train, X_val, y_val, alphas=None):
     if alphas is None:
-        # Start high, halve alpha each time
-        alphas = [1e5 / (2 ** i) for i in range(15)]
+        # Start high, 3/4 alpha each time
+        alphas = [1e5 * (0.75 ** i) for i in range(30)]
 
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)

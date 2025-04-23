@@ -8,7 +8,7 @@ from sklearn.model_selection import KFold, train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 from models.linear_model import train_linear_regression
 from models.Ridge_Regression import Ridge_regression
-from models.StratifiedKFold import Ridge_regression_KFold, dynamic_alpha_ridge, ridge_annealing_search
+from models.StratifiedKFold import Ridge_regression_KFold, ridge_annealing_search
 from sklearn.preprocessing import StandardScaler
 
 
