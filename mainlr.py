@@ -3,12 +3,12 @@
 import pandas as pd
 import numpy as np
 import os
-from utils.preprocess import preprocess_data, build_preprocessing_pipeline, build_preprocessing_pipeline2
-from sklearn.model_selection import KFold, train_test_split
+from utils.preprocess import preprocess_data, build_preprocessing_pipeline
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 from models.linear_model import train_linear_regression
 from models.Ridge_Regression import Ridge_regression
-from models.StratifiedKFold import Ridge_regression_KFold, ridge_annealing_search
+from models.StratifiedKFold import  precise_alpha_search, ridge_annealing_search
 from sklearn.preprocessing import StandardScaler
 
 
@@ -293,7 +293,7 @@ def run_kfold_ridge():
     X_test_transformed = preprocessor.transform(test_clean)
 
     # Train the Ridge Regression model with K-Fold
-    ridge_model, scaler = ridge_annealing_search(X_train_transformed, y_train, X_val_transformed, y_val)
+    ridge_model, scaler = precise_alpha_search(X_train_transformed, y_train, X_val_transformed, y_val)
 
     # Use the prediction function for test data
     test_predictions = predict_new_data(X_test_transformed, ridge_model, scaler)
@@ -315,8 +315,8 @@ def run_kfold_ridge():
     submission['Y'] = test_predictions
 
     # Save predictions
-    submission.to_csv("submission_Ridge_updated.csv", index=False)
-    print("✅ Submission file saved as submission_Ridge_updated.csv")
+    submission.to_csv("submission_Ridge_precise_alpha_search.csv", index=False)
+    print("✅ Submission file saved as submission_Ridge_precise_alpha_search.csv")
 
     # Print model evaluation on validation set
     val_predictions = predict_new_data(X_val_transformed, ridge_model, scaler)
