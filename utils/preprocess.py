@@ -51,6 +51,11 @@ def clean_price(price_str):
     else:
         return 0.0  # Handle the case when the value is a float or other non-string type
 
+def clean_rating(rating, mean_rating):
+    
+    if pd.isnull(rating) or rating > 5:
+        return mean_rating  # Replace with the mean rating
+    return rating
 
 def encode_features(df):
     df = df.copy()
@@ -85,6 +90,11 @@ def preprocess_data(df):
     df['Size'] = df['Size'].apply(clean_size)
     df['Installs'] = df['Installs'].apply(clean_installs)
     df['Price'] = df['Price'].apply(clean_price)
+
+        # Clean 'App Rating'
+    if 'App Rating' in df.columns:
+        mean_rating = df['App Rating'].mean(skipna=True)  # Calculate mean rating
+        df['App Rating'] = df['App Rating'].apply(lambda x: clean_rating(x, mean_rating))
 
     # Drop columns with all NaN values
     df = df.dropna(axis=1, how='all')
