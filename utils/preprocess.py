@@ -87,14 +87,17 @@ def encode_features(df):
 
 def preprocess_data(df):
     df = df.copy()
-    df['Size'] = df['Size'].apply(clean_size)
     df['Installs'] = df['Installs'].apply(clean_installs)
-    df['Price'] = df['Price'].apply(clean_price)
+
 
         # Clean 'App Rating'
     if 'App Rating' in df.columns:
         mean_rating = df['App Rating'].mean(skipna=True)  # Calculate mean rating
         df['App Rating'] = df['App Rating'].apply(lambda x: clean_rating(x, mean_rating))
+
+
+    cols_all_nan = df.columns[df.isna().all()].tolist()
+    print("Dropped columns (all NaN):", cols_all_nan)
 
     # Drop columns with all NaN values
     df = df.dropna(axis=1, how='all')

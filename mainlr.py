@@ -26,35 +26,42 @@ test = pd.read_csv(test_path)
 
 # Rename columns
 column_map = {
-    'X0': 'App Name',
-    'X1': 'Category',
+    'X0': 'App Name',#drop this column
+    'X1': 'Category',#drop this column
     'X2': 'Reviews',
-    'X3': 'Size',
+    'X3': 'Size',#drop this column
     'X4': 'Installs',
     'X5': 'Type',
-    'X6': 'Price',
+    'X6': 'Price', #drop this column
     'X7': 'Content Rating',
-    'X8': 'Genres',
-    'X9': 'Last Updated',
-    'X10': 'Current Version',
-    'X11': 'Android Version',
+    'X8': 'Genres',#drop this column
+    'X9': 'Last Updated',#drop this column
+    'X10': 'Current Version', #drop this column
+    'X11': 'Android Version', #drop this column
     'Y': 'App Rating'
 }
 
 train.rename(columns=column_map, inplace=True)
 test.rename(columns=column_map, inplace=True)
 
+columns_to_drop = [
+    'App Name',          
+    'Current Version',   
+    'Android Version',
+    'Last Updated',
+    'Genres',
+    'Category',
+    'Price',
+    'Size',
+]
+
+# Drop from both datasets
+train.drop(columns=columns_to_drop, inplace=True, errors='ignore')
+test.drop(columns=columns_to_drop, inplace=True, errors='ignore')
 
 
-# Show basic info
-print("Train shape:", train.shape)
-print("Test shape:", test.shape)
-print("\nTrain columns:\n", train.columns)
-print("\nMissing values:\n", train.isnull().sum())
+test_app_names = train['App Rating'].copy()
 
-test_app_names = test['App Name'].copy()
-train = preprocess_data(train)
-test = preprocess_data(test)
 
 def RunNormalLinear():
     train_clean = preprocess_data(train)
@@ -293,7 +300,7 @@ def run_kfold_ridge():
     X_test_transformed = preprocessor.transform(test_clean)
 
     # Train the Ridge Regression model with K-Fold
-    ridge_model, scaler = precise_alpha_search(X_train_transformed, y_train, X_val_transformed, y_val)
+    ridge_model, scaler = ridge_annealing_search(X_train_transformed, y_train, X_val_transformed, y_val)
 
     # Use the prediction function for test data
     test_predictions = predict_new_data(X_test_transformed, ridge_model, scaler)
@@ -315,8 +322,8 @@ def run_kfold_ridge():
     submission['Y'] = test_predictions
 
     # Save predictions
-    submission.to_csv("submission_Ridge_precise_alpha_search.csv", index=False)
-    print("✅ Submission file saved as submission_Ridge_precise_alpha_search.csv")
+    submission.to_csv("submission_Ridge_annealing_search.csv", index=False)
+    print("✅ Submission file saved as submission_Ridge_annealing_search.csv")
 
     # Print model evaluation on validation set
     val_predictions = predict_new_data(X_val_transformed, ridge_model, scaler)
