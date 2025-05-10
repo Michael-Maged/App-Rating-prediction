@@ -36,7 +36,7 @@ def plot_residuals(y_true, y_pred):
 
 def plot_feature_vs_rating(df, feature_col, rating_col='App Rating'):
     if feature_col not in df.columns:
-        print(f"❌ Column '{feature_col}' not found in the DataFrame.")
+        print(f"Column '{feature_col}' not found in the DataFrame.")
         return
 
     plt.figure(figsize=(7, 4))
