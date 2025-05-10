@@ -40,8 +40,6 @@ column_map = {
 train.rename(columns=column_map, inplace=True)
 test.rename(columns=column_map, inplace=True)
 
-plot_feature_vs_rating(train, 'Price')
-
 # Show basic info
 print("Train shape:", train.shape)
 print("Test shape:", test.shape)
