@@ -7,6 +7,7 @@ from utils.preprocess import preprocess_data, feature_engineering
 from sklearn.model_selection import train_test_split
 from models.gradient_boosting_model import train_gradient_boosting
 from sklearn.preprocessing import OneHotEncoder
+from visualize import *
 
 
 # Set seed for reproducibility
@@ -39,7 +40,7 @@ column_map = {
 train.rename(columns=column_map, inplace=True)
 test.rename(columns=column_map, inplace=True)
 
-
+plot_feature_distributions(train)
 
 # Show basic info
 print("Train shape:", train.shape)
@@ -79,6 +80,9 @@ def RunGradientBoosting():
 
     # Train Gradient Boosting model
     gbr_model = train_gradient_boosting(X_train, y_train, X_val, y_val)
+
+    # Visualize Predicted vs Actual Ratings
+    plot_predictions_vs_actual(y_val, gbr_model.predict(X_val))
 
     # Predict on test data
     test_predictions = gbr_model.predict(test_clean)
