@@ -40,8 +40,6 @@ column_map = {
 train.rename(columns=column_map, inplace=True)
 test.rename(columns=column_map, inplace=True)
 
-plot_feature_distributions(train)
-
 # Show basic info
 print("Train shape:", train.shape)
 print("Test shape:", test.shape)
@@ -80,9 +78,6 @@ def RunGradientBoosting():
 
     # Train Gradient Boosting model
     gbr_model = train_gradient_boosting(X_train, y_train, X_val, y_val)
-
-    # Visualize Predicted vs Actual Ratings
-    plot_predictions_vs_actual(y_val, gbr_model.predict(X_val))
 
     # Predict on test data
     test_predictions = gbr_model.predict(test_clean)
