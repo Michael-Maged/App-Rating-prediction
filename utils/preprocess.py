@@ -22,7 +22,6 @@ def clean_size(size_str):
         return float(size_str.replace('K', ''))
     return None  
 
-
 def clean_installs(install_str):
     if pd.isnull(install_str):
         return 0
@@ -51,23 +50,6 @@ def clean_rating(rating, mean_rating):
         return mean_rating 
     return rating
 
-def encode_features(df):
-    df = df.copy()
-
-    if 'App Name' in df.columns:
-        df.drop(columns=['App Name'], inplace=True)
-
-    if 'Size' in df.columns:
-        df['Size'] = pd.to_numeric(df['Size'], errors='coerce')
-        df['Size'] = df['Size'].fillna(df['Size'].median())
-
-    for col in df.select_dtypes(include='object').columns:
-        if df[col].isnull().any():
-            df[col] = df[col].fillna(df[col].mode()[0])
-
-    df = pd.get_dummies(df, drop_first=True)
-    return df
-
 
 def preprocess_data(df):
     df = df.copy()
@@ -82,7 +64,15 @@ def preprocess_data(df):
     for col in df.select_dtypes(include=[np.number]).columns:
         df[col] = df[col].fillna(df[col].median())
 
-    df = encode_features(df)
+    if 'Size' in df.columns:
+        df['Size'] = pd.to_numeric(df['Size'], errors='coerce')
+        df['Size'] = df['Size'].fillna(df['Size'].median())
+
+    for col in df.select_dtypes(include='object').columns:
+        if df[col].isnull().any():
+            df[col] = df[col].fillna(df[col].mode()[0])
+
+    df = pd.get_dummies(df, drop_first=True)    
     return df
 
 def feature_engineering(df):
