@@ -5,7 +5,6 @@ import os
 from utils.preprocess import *
 from sklearn.model_selection import train_test_split
 from models.gradient_boosting_model import train_gradient_boosting
-from sklearn.preprocessing import OneHotEncoder
 from visualize import *
 
 np.random.seed(42)
