@@ -63,6 +63,8 @@ def RunGradientBoosting():
     test_clean = pd.get_dummies(test_clean, drop_first=True)
 
     X, test_clean = X.align(test_clean, join='left', axis=1, fill_value=0)
+    print(f"Train:\n{X.head()}")
+    print(f"Test:\n{test_clean.head()}")
 
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
