@@ -7,6 +7,7 @@ from utils.preprocess import preprocess_data, feature_engineering
 from sklearn.model_selection import train_test_split
 from models.gradient_boosting_model import train_gradient_boosting
 from sklearn.preprocessing import OneHotEncoder
+from visualize import *
 
 
 # Set seed for reproducibility
@@ -38,8 +39,6 @@ column_map = {
 
 train.rename(columns=column_map, inplace=True)
 test.rename(columns=column_map, inplace=True)
-
-
 
 # Show basic info
 print("Train shape:", train.shape)
