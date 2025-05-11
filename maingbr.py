@@ -82,6 +82,8 @@ def RunGradientBoosting():
 
     # Train Gradient Boosting model
     gbr_model = train_gradient_boosting(X_train, y_train, X_val, y_val)
+    
+    plot_residuals(y_val, gbr_model.predict(X_val))
 
     # Predict on test data
     test_predictions = gbr_model.predict(test_clean)
