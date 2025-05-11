@@ -3,7 +3,7 @@
 import pandas as pd
 import numpy as np
 import os
-from utils.preprocess import clean_installs, clean_size, preprocess_data, feature_engineering
+from utils.preprocess import *
 from sklearn.model_selection import train_test_split
 from models.gradient_boosting_model import train_gradient_boosting
 from sklearn.preprocessing import OneHotEncoder
@@ -41,8 +41,7 @@ train.rename(columns=column_map, inplace=True)
 test.rename(columns=column_map, inplace=True)
 
 
-train['Size'] = train['Size'].apply(clean_size)
-plot_feature_vs_rating(train, 'Size')
+train['Price'] = train['Price'].apply(clean_price)
 
 # Show basic info
 print("Train shape:", train.shape)
@@ -82,8 +81,6 @@ def RunGradientBoosting():
 
     # Train Gradient Boosting model
     gbr_model = train_gradient_boosting(X_train, y_train, X_val, y_val)
-    
-    plot_residuals(y_val, gbr_model.predict(X_val))
 
     # Predict on test data
     test_predictions = gbr_model.predict(test_clean)
@@ -105,6 +102,9 @@ def RunGradientBoosting():
     # Save the submission file
     submission.to_csv("submission_gbr.csv", index=False)
     print("✅ Submission file saved as submission_gbr.csv")
+    
+    plot_residuals(y_val, gbr_model.predict(X_val))
+    plot_predictions_vs_actual(y_val, gbr_model.predict(X_val))
 
 if __name__ == "__main__":
 

@@ -3,8 +3,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 
-# RMSE: 0.4288
-# 3ala kaggle: Prvt = 0.25386, Pblc = 0.24806
+# RMSE: 0.4281, R^2 0.0761
 def train_gradient_boosting(X_train, y_train, X_val, y_val):
     model = GradientBoostingRegressor(random_state=42)
     model.fit(X_train, y_train)
