@@ -36,11 +36,6 @@ test.rename(columns=column_map, inplace=True)
 
 train['Price'] = train['Price'].apply(clean_price)
 
-print("Train shape:", train.shape)
-print("Test shape:", test.shape)
-print("\nTrain columns:\n", train.columns)
-print("\nMissing values:\n", train.isnull().sum())
-
 test_app_names = test['App Name'].copy()
 
 train = preprocess_data(train)
@@ -48,12 +43,17 @@ test = preprocess_data(test)
 train = feature_engineering(train)
 test = feature_engineering(test)
 
+print("Train shape:", train.shape)
+print("Test shape:", test.shape)
+print("\nTrain columns:\n", train.columns)
+print("\nMissing values:\n", train.isnull().sum())
+
 def RunGradientBoosting():
     train_clean = preprocess_data(train)
     test_clean = preprocess_data(test)
     
-    train_clean = feature_engineering(train_clean)
-    test_clean = feature_engineering(test_clean)
+    train_clean = feature_engineering(train)
+    test_clean = feature_engineering(test)
 
     X = train_clean.drop(columns=['App Rating'], errors='ignore')
     y = train_clean['App Rating']

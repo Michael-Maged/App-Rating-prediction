@@ -73,7 +73,7 @@ def preprocess_data(df):
             df[col] = df[col].fillna(df[col].mode()[0])
             
     df = df.dropna(axis=1, how='all')
-    df = pd.get_dummies(df, drop_first=True)    
+    df = pd.get_dummies(df, drop_first=True)   
     return df
 
 def feature_engineering(df):
