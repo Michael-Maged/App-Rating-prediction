@@ -3,7 +3,7 @@
 import pandas as pd
 import numpy as np
 import os
-from utils.preprocess import preprocess_data, feature_engineering
+from utils.preprocess import clean_installs, clean_size, preprocess_data, feature_engineering
 from sklearn.model_selection import train_test_split
 from models.gradient_boosting_model import train_gradient_boosting
 from sklearn.preprocessing import OneHotEncoder
@@ -40,7 +40,9 @@ column_map = {
 train.rename(columns=column_map, inplace=True)
 test.rename(columns=column_map, inplace=True)
 
-plot_feature_vs_rating(train, 'Reviews')
+
+train['Size'] = train['Size'].apply(clean_size)
+plot_feature_vs_rating(train, 'Size')
 
 # Show basic info
 print("Train shape:", train.shape)

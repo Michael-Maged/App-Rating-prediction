@@ -51,14 +51,6 @@ def plot_feature_vs_rating(df, feature_col, rating_col='App Rating'):
         print(f"Column '{feature_col}' not found in the DataFrame.")
         return
 
-    # Convert object-type columns to numeric if possible
-    if df[feature_col].dtype == 'object':
-        try:
-            df[feature_col] = pd.to_numeric(df[feature_col], errors='coerce')
-            print(f"Converted column '{feature_col}' to numeric.")
-        except Exception as e:
-            print(f"Could not convert column '{feature_col}' to numeric: {e}")
-            return
 
     # Check if the column is numeric after conversion
     if not pd.api.types.is_numeric_dtype(df[feature_col]):
