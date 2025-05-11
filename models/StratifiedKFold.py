@@ -1,7 +1,7 @@
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error, r2_score, make_scorer
 from sklearn.model_selection import GridSearchCV, KFold
-from sklearn.preprocessing import RobustScaler, StandardScaler
+from sklearn.preprocessing import StandardScaler
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -91,7 +91,7 @@ def ridge_annealing_search(X_train, y_train, X_val, y_val, alphas=None):
     plt.grid(True)
     plt.show()
 
-    print(f"\n🔥 Best Alpha: {best_alpha:.4f} | Best RMSE: {best_rmse:.4f}")
+    print(f"\n Best Alpha: {best_alpha:.4f} | Best RMSE: {best_rmse:.4f}")
     return best_model, scaler
 
 def precise_alpha_search(X_train, y_train, X_val, y_val):
