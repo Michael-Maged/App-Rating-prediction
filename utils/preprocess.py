@@ -71,7 +71,8 @@ def preprocess_data(df):
     for col in df.select_dtypes(include='object').columns:
         if df[col].isnull().any():
             df[col] = df[col].fillna(df[col].mode()[0])
-
+            
+    df = df.dropna(axis=1, how='all')
     df = pd.get_dummies(df, drop_first=True)    
     return df
 
