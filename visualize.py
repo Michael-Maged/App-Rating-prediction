@@ -35,22 +35,9 @@ def plot_residuals(y_true, y_pred):
     plt.show()
 
 def plot_feature_vs_rating(df, feature_col, rating_col='App Rating'):
-    """
-    Visualizes a feature against the target rating using a scatter plot.
-    Converts object-type columns to numeric if possible.
-
-    Parameters:
-    - df: DataFrame containing the data.
-    - feature_col: The feature column to plot.
-    - rating_col: The target column (default is 'App Rating').
-
-    Returns:
-    - None
-    """
     if feature_col not in df.columns:
         print(f"Column '{feature_col}' not found in the DataFrame.")
         return
-
 
     # Check if the column is numeric after conversion
     if not pd.api.types.is_numeric_dtype(df[feature_col]):
