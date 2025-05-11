@@ -51,7 +51,6 @@ print("\nMissing values:\n", train.isnull().sum())
 def RunGradientBoosting():
     train_clean = preprocess_data(train)
     test_clean = preprocess_data(test)
-    
     train_clean = feature_engineering(train)
     test_clean = feature_engineering(test)
 
